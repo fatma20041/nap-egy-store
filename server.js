@@ -7,7 +7,9 @@ const bcrypt = require('bcryptjs'); // ✅ ADDED
 
 const app = express();
 app.use(express.static(__dirname));
-
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/NAP.html'); 
+});
 // 1. الإعدادات الأساسية
 app.use(cors());
 app.use(express.json({ limit: '100mb' })); 
