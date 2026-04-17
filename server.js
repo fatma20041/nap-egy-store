@@ -4,7 +4,7 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const bcrypt = require('bcryptjs'); 
-const path = require('path'); // مكتبة المسارات
+const path = require('path'); 
 
 const app = express();
 
@@ -13,8 +13,7 @@ app.use(cors());
 app.use(express.json({ limit: '100mb' })); 
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
-// ✅ السطر ده هو اللي بيخلي التنسيقات (NAP.css) تظهر
-// بيخلي السيرفر يقرأ أي ملف موجود في نفس المجلد
+// ✅ السطر ده حيوي جداً: بيخلي السيرفر يفتح الصور وملفات الـ CSS والـ JS
 app.use(express.static(path.join(__dirname)));
 
 // ✅ توجيه الصفحة الرئيسية لفتح ملف NAP.html
@@ -32,12 +31,12 @@ const dbURI = 'mongodb+srv://admin:nap123@cluster0.l7barrw.mongodb.net/NAP_DB';
 mongoose.connect(dbURI)
   .then(() => {
       console.log('Connected to NAP Database! ✅');
-      if (typeof seedProducts === "function") seedProducts(); 
+      seedProducts(); // استدعاء دالة إضافة المنتجات التجريبية
   })
   .catch((err) => console.log('Database Connection Error ❌:', err));
 
 // ---------------------------------------------------
-// 3. إعداد Nodemailer
+// 3. إعداد Nodemailer (إرسال الإيميلات)
 // ---------------------------------------------------
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -46,7 +45,7 @@ const transporter = nodemailer.createTransport({
     secure: true,
     auth: {
         user: 'nap.egy.store@gmail.com',
-        pass: 'ovov fbwh nhwx mqyv'
+        pass: 'ovov fbwh nhwx mqyv' // كود التطبيق الخاص بجوجل
     },
     tls: {
         rejectUnauthorized: false
@@ -59,7 +58,7 @@ transporter.verify((error) => {
 });
 
 // ---------------------------------------------------
-// 4. Models
+// 4. Models (هيكل البيانات)
 // ---------------------------------------------------
 const User = mongoose.model('User', new mongoose.Schema({
   fullName: { type: String, required: true },
@@ -75,7 +74,7 @@ const Product = mongoose.model('Product', new mongoose.Schema({
 }));
 
 // ---------------------------------------------------
-// 5. AUTH (REGISTER + LOGIN UPDATED)
+// 5. Auth (التسجيل ودخول المستخدمين)
 // ---------------------------------------------------
 app.post('/register', async (req, res) => {
   try {
@@ -115,7 +114,7 @@ app.post('/login', async (req, res) => {
 });
 
 // ---------------------------------------------------
-// 6. UPDATE ACCOUNT (FIXED - NEW)
+// 6. Update Account (تعديل بيانات الحساب)
 // ---------------------------------------------------
 app.post('/update-account', async (req, res) => {
     try {
@@ -139,12 +138,13 @@ app.post('/update-account', async (req, res) => {
 });
 
 // ---------------------------------------------------
-// 7. ORDERS + EMAIL
+// 7. Orders (إرسال الطلبات للإيميل)
 // ---------------------------------------------------
 app.post('/place-order', async (req, res) => {
     try {
         const data = req.body;
         const { customer, payment, cart_items, total, custom_designs } = data;
+        
         res.status(200).json({ status: 'success' });
 
         let attachments = [];
@@ -154,7 +154,7 @@ app.post('/place-order', async (req, res) => {
             customInfoText += `\n=========================================\n   🎨 CUSTOM DESIGN DETAILS\n=========================================\n`;
             custom_designs.forEach((design, i) => {
                 customInfoText += `\nDesign #${i + 1}\nFit: ${design.fit}\nColor: ${design.color}\nDescription: ${design.description}\n`;
-                if (design.images && Array.isArray(design.images) && design.images.length > 0) {
+                if (design.images && design.images.length > 0) {
                     design.images.forEach((img, index) => {
                         const base64 = img.includes(',') ? img.split(',')[1] : img;
                         attachments.push({
@@ -174,14 +174,14 @@ app.post('/place-order', async (req, res) => {
             attachments: attachments,
             text: `
 =========================================
-   📦 NEW ORDER DETAILS RECEIVED
+    📦 NEW ORDER DETAILS RECEIVED
 =========================================
 Customer: ${customer.name}
 Email:    ${customer.email}
 Phone:    ${customer.phone}
 Address:  ${customer.address}
 Method:   ${payment}
-Total:    ${total}
+Total:    ${total} EGP
 
 🛒 ITEMS:
 ${cart_items.map(item => `- ${item.name} (Qty: ${item.qty}) - EGP ${item.price}`).join('\n')}
@@ -198,7 +198,7 @@ ${customInfoText}
 });
 
 // ---------------------------------------------------
-// 8. CONTACT
+// 8. Contact Form
 // ---------------------------------------------------
 app.post('/contact', (req, res) => {
     const { name, email, phone, comment } = req.body;
@@ -213,17 +213,18 @@ app.post('/contact', (req, res) => {
 });
 
 // ---------------------------------------------------
-// 9. PRODUCTS
+// 9. Products API (جلب المنتجات)
 // ---------------------------------------------------
 app.get('/products', async (req, res) => {
     try {
         const products = await Product.find();
         res.json(products);
     } catch (err) {
-        res.status(500).json({ message: "Error" });
+        res.status(500).json({ message: "Error fetching products" });
     }
 });
 
+// دالة لإضافة منتجات تجريبية لو القاعدة فاضية
 async function seedProducts() {
     const count = await Product.countDocuments();
     if (count === 0) {
@@ -237,5 +238,9 @@ async function seedProducts() {
 }
 
 // ---------------------------------------------------
+// تشغيل السيرفر
+// ---------------------------------------------------
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+});
