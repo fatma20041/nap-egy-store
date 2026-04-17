@@ -3,13 +3,18 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
-const bcrypt = require('bcryptjs'); // ✅ ADDED
+const bcrypt = require('bcryptjs'); 
+const path = require('path'); // ✅ أضفت ده بس عشان التنسيقات تشتغل
 
 const app = express();
-app.use(express.static(__dirname));
+
+// --- تعديل الربط بالـ CSS والملفات (الأهم) ---
+app.use(express.static(path.join(__dirname)));
+
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/NAP.html'); 
+  res.sendFile(path.join(__dirname, 'NAP.html')); 
 });
+
 // 1. الإعدادات الأساسية
 app.use(cors());
 app.use(express.json({ limit: '100mb' })); 
@@ -20,20 +25,15 @@ const upload = multer({ storage: multer.memoryStorage() });
 // ---------------------------------------------------
 // 2. الربط بقاعدة البيانات (MongoDB)
 // ---------------------------------------------------
-
-
-// 1. السطر ده أهم سطر عشان ملفات الـ HTML والـ CSS تظهر للناس
-app.use(express.static(__dirname));
-
 const dbURI = 'mongodb+srv://admin:nap123@cluster0.l7barrw.mongodb.net/NAP_DB';
 
 mongoose.connect(dbURI)
   .then(() => {
       console.log('Connected to NAP Database! ✅');
-      // لو عندك دالة اسمها seedProducts سيبها، لو مش عندك امسحي السطر اللي تحت ده
       if (typeof seedProducts === "function") seedProducts(); 
   })
   .catch((err) => console.log('Database Connection Error ❌:', err));
+
 // ---------------------------------------------------
 // 3. إعداد Nodemailer
 // ---------------------------------------------------
@@ -75,51 +75,38 @@ const Product = mongoose.model('Product', new mongoose.Schema({
 // ---------------------------------------------------
 // 5. AUTH (REGISTER + LOGIN UPDATED)
 // ---------------------------------------------------
-
-// REGISTER (SECURE)
 app.post('/register', async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = new User({
       fullName,
       email,
       password: hashedPassword
     });
-
     await newUser.save(); 
     res.status(200).json({ status: 'success' }); 
-
   } catch (err) {
     res.status(400).json({ status: 'error', message: 'Email already exists!' });
   }
 });
 
-// LOGIN (SECURE)
 app.post('/login', async (req, res) => {
     try {
       const { email, password } = req.body;
-
       const user = await User.findOne({ email });
-
       if (!user) {
           return res.status(400).json({ status: 'error', message: "Invalid email/password" });
       }
-
       const isMatch = await bcrypt.compare(password, user.password);
-
       if (!isMatch) {
           return res.status(400).json({ status: 'error', message: "Invalid email/password" });
       }
-
       res.status(200).json({
           status: 'success',
           userName: user.fullName,
           email: user.email
       });
-
     } catch (err) {
       res.status(500).json({ status: 'error' });
     }
@@ -131,86 +118,50 @@ app.post('/login', async (req, res) => {
 app.post('/update-account', async (req, res) => {
     try {
         const { email, fullName, newPassword } = req.body;
-
         const user = await User.findOne({ email });
-
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
-        if (fullName) {
-            user.fullName = fullName;
-        }
-
+        if (fullName) user.fullName = fullName;
         if (newPassword && newPassword.trim() !== "") {
             user.password = await bcrypt.hash(newPassword, 10);
         }
-
         await user.save();
-
         res.status(200).json({
             message: "Account updated successfully",
             userName: user.fullName
         });
-
     } catch (err) {
         res.status(500).json({ message: "Server error" });
     }
 });
 
 // ---------------------------------------------------
-// 7. ORDERS + EMAIL (FIXED FOR SPEED)
+// 7. ORDERS + EMAIL
 // ---------------------------------------------------
 app.post('/place-order', async (req, res) => {
     try {
         const data = req.body;
         const { customer, payment, cart_items, total, custom_designs } = data;
-
-        // ✅ التعديل الجوهري: نرسل النجاح فوراً للمتصفح حتى لا ينتظر المستخدم
         res.status(200).json({ status: 'success' });
 
-        // الآن نقوم بمعالجة الإيميل في الخلفية دون تعطيل الرد
         let attachments = [];
         let customInfoText = "";
 
         if (custom_designs && custom_designs.length > 0) {
-            customInfoText += `
-=========================================
-   🎨 CUSTOM DESIGN DETAILS
-=========================================
-`;
-
+            customInfoText += `\n=========================================\n   🎨 CUSTOM DESIGN DETAILS\n=========================================\n`;
             custom_designs.forEach((design, i) => {
-
-                customInfoText += `
-Design #${i + 1}
------------------------
-Fit: ${design.fit}
-Color: ${design.color}
-Description: ${design.description}
-`;
-
+                customInfoText += `\nDesign #${i + 1}\nFit: ${design.fit}\nColor: ${design.color}\nDescription: ${design.description}\n`;
                 if (design.images && Array.isArray(design.images) && design.images.length > 0) {
-                    customInfoText += `Images: ${design.images.length} attached\n`;
-
                     design.images.forEach((img, index) => {
-
-                        const base64 = img.includes(',')
-                            ? img.split(',')[1]
-                            : img;
-
+                        const base64 = img.includes(',') ? img.split(',')[1] : img;
                         attachments.push({
                             filename: `custom-design-${i + 1}-${index + 1}.png`,
                             content: Buffer.from(base64, 'base64'),
                             contentType: 'image/png'
                         });
                     });
-
-                } else {
-                    customInfoText += `Images: None\n`;
                 }
-
-                customInfoText += `-----------------------\n`;
             });
         }
 
@@ -223,40 +174,24 @@ Description: ${design.description}
 =========================================
    📦 NEW ORDER DETAILS RECEIVED
 =========================================
+Customer: ${customer.name}
+Email:    ${customer.email}
+Phone:    ${customer.phone}
+Address:  ${customer.address}
+Method:   ${payment}
+Total:    ${total}
 
-👤 CUSTOMER INFORMATION:
------------------------
-Name:    ${customer.name}
-Email:   ${customer.email}
-Phone:   ${customer.phone}
-
-📍 SHIPPING INFORMATION:
------------------------
-Address: ${customer.address}
-
-💳 PAYMENT INFORMATION:
------------------------
-Method:  ${payment}
-Total:   ${total}
-
-🛒 ORDER ITEMS:
------------------------
+🛒 ITEMS:
 ${cart_items.map(item => `- ${item.name} (Qty: ${item.qty}) - EGP ${item.price}`).join('\n')}
 
 ${customInfoText}
-
-=========================================
-       END OF ORDER REPORT
 =========================================
             `
         };
 
-        // نرسل الإيميل هنا "بخلفية الكود" بدون Callback يعطل الاستجابة
-        transporter.sendMail(mailOptions).catch(err => console.error("Mail Send Error In Background:", err));
-
+        transporter.sendMail(mailOptions).catch(err => console.error("Mail Error:", err));
     } catch (err) {
-        console.error("Order Processing Error:", err);
-        // لا نرسل res.status هنا لأننا أرسلناه بالفعل بالأعلى
+        console.error("Order Error:", err);
     }
 });
 
@@ -265,17 +200,13 @@ ${customInfoText}
 // ---------------------------------------------------
 app.post('/contact', (req, res) => {
     const { name, email, phone, comment } = req.body;
-
-    // إرسال رد سريع للعميل
     res.status(200).json({ status: 'success' });
-
     const mailOptions = {
         from: 'nap.egy.store@gmail.com',
         to: 'nap.egy.store@gmail.com',
         subject: `📩 Contact Form: ${name}`,
         text: `Customer: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${comment}`
     };
-
     transporter.sendMail(mailOptions).catch(err => console.error("Contact Mail Error:", err));
 });
 
