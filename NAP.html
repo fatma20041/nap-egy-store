@@ -58,9 +58,6 @@
         <div class="scrolling-text">
             <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
             <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
     </div>
 
@@ -201,11 +198,14 @@
     </div>
 
     <script>
+    // 1. وظيفة تحميل المنتجات (تم تعديل الرابط للعمل أونلاين)
     async function loadDailyDrop() {
         try {
-            const response = await fetch('http://localhost:3000/products');
+            const response = await fetch('/products'); // ✅ تم التعديل هنا
             const allProducts = await response.json();
             const grid = document.getElementById('daily-drop-list');
+            if (!grid) return;
+
             const latestProducts = allProducts.slice(-4).reverse();
             grid.innerHTML = ''; 
 
@@ -229,12 +229,13 @@
                 `;
             });
         } catch (err) {
-    console.error("Error loading products:", err);
-    const grid = document.getElementById('daily-drop-list');
-    grid.innerHTML = "<p>Failed to load products</p>";
-}
+            console.error("Error loading products:", err);
+            const grid = document.getElementById('daily-drop-list');
+            if(grid) grid.innerHTML = "<p>Failed to load products</p>";
+        }
     }
 
+    // 2. وظيفة إضافة للمنتجات للعربة
     function addToCart(name, price, image, event) {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         const existingItem = cart.find(item => item.name === name);
@@ -253,9 +254,11 @@
         }, 1500);
     }
 
+    // 3. إدارة واجهة المستخدم والسيرش
     document.addEventListener('DOMContentLoaded', () => {
         loadDailyDrop();
 
+        // فحص حالة تسجيل الدخول
         const storedName = localStorage.getItem('userName');
         if (storedName && storedName !== "null") {
             const userLink = document.getElementById('user-link');
@@ -271,12 +274,12 @@
             }
         }
 
+        // منطق السيرش
         const searchOverlay = document.getElementById('search-overlay');
         const searchInput = document.getElementById('main-search-input');
         const dropdown = document.getElementById('search-dropdown');
         const searchTrigger = document.getElementById('search-trigger');
         
-        // فتح السيرش
         searchTrigger.onclick = (e) => {
             e.stopPropagation();
             searchOverlay.classList.add('active');
@@ -289,30 +292,18 @@
             dropdown.classList.remove('active');
         };
 
-        // إغلاق السيرش عند الضغط على الأزرار
         document.getElementById('close-search').onclick = closeSearch;
         document.getElementById('mobile-close-btn').onclick = closeSearch;
 
-        // --- التعديل: إغلاق السيرش عند الضغط في أي مكان فارغ ---
         searchOverlay.onclick = (e) => {
-            // لو الضغطة كانت على الـ overlay نفسه مش على الصندوق الأبيض الداخلي
-            if (e.target === searchOverlay) {
-                closeSearch();
-            }
+            if (e.target === searchOverlay) closeSearch();
         };
 
-        // منع إغلاق السيرش عند الضغط داخل صندوق البحث نفسه
-        document.querySelector('.search-content-box').onclick = (e) => {
-            e.stopPropagation();
-        };
-
-        // فتح القائمة المنسدلة
         searchInput.onclick = (e) => { 
             e.stopPropagation(); 
             dropdown.classList.toggle('active'); 
         };
 
-        // الخريطة المحدثة لتطابق data-value
         const siteMap = { 
             "NAP": "NAP.html", 
             "product": "product.html", 
@@ -329,13 +320,10 @@
             item.onclick = () => {
                 const val = item.getAttribute('data-value');
                 searchInput.value = item.innerText;
-                if (siteMap[val]) {
-                    window.location.href = siteMap[val];
-                }
+                if (siteMap[val]) window.location.href = siteMap[val];
             };
         });
 
-        // إغلاق القائمة المنسدلة لو ضغطت براها وهي مفتوحة جوه السيرش
         document.addEventListener('click', () => {
             dropdown.classList.remove('active');
         });
