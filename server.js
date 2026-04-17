@@ -14,6 +14,7 @@ app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
 // ✅ السطر ده حيوي جداً: بيخلي السيرفر يفتح الصور وملفات الـ CSS والـ JS
+
 app.use(express.static(path.join(__dirname)));
 
 // ✅ توجيه الصفحة الرئيسية لفتح ملف NAP.html
