@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Your Piece | NAP</title>
+    <link rel="stylesheet" href="NAP.css">
+    <style>
+        /* ستايل معاينة الصور */
+        #preview-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #eee;
+        }
+        .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* ستايل رسائل الـ Overlay */
+        .custom-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .message-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .message-box h2 { margin-bottom: 15px; color: #000; }
+        .message-box p { margin-bottom: 20px; color: #555; line-height: 1.5; }
+        .message-box button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .message-box button:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <div id="message-container"></div>
+
+   <header class="yonyo-header">
+        <div class="header-wrapper">
+            <nav class="nav-area">
+                <ul>
+                    <li><a href="NAP.html" class="active">Home</a></li>
+                    <li><a href="product.html">Products</a></li>
+                    <li><a href="return.html">Return & Exchange Policy</a></li>
+                    <li><a href="shipping.html">Shipping Policy</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="logo-area">
+                <a href="NAP.html">
+                    <img src="logo.jpeg" alt="NAP Logo" class="main-logo"> 
+                </a>
+            </div>
+
+            <div class="icons-area">
+                <a href="javascript:void(0)" class="icon-link" id="search-trigger">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </a>
+
+                <div class="user-dropdown" id="user-menu">
+                    <a href="#" class="icon-link">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="login.html" id="user-link">Login</a>
+                        <a href="register.html" id="reg-link">Register</a>
+                        <hr>
+                        <a href="account.html">My Account</a>
+                        <a href="#" id="logout-btn" style="display:none; color: red;">Logout</a>
+                    </div>
+                </div>
+
+                <a href="cart.html" class="icon-link">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="announcement-bar">
+    <div class="scrolling-text">
+        <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+         <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+         <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+         <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+    </div>
+</div>
+
+    <main class="customize-page">
+        <div class="customize-container">
+            <div class="customize-intro">
+                <span class="step-number">NAP Studio</span>
+                <h1>CUSTOMIZE YOUR PIECE</h1>
+                <p>Select your fit and explore our handpicked color palette.</p>
+            </div>
+
+            <form class="custom-studio-form" id="customizeForm">
+                <div class="step-section">
+                    <span class="step-number">01</span>
+                    <h3>The Fit</h3>
+                    <div class="options-grid">
+                        <label class="option-card">
+                            <input type="radio" name="fit" value="boxy" required>
+                            <div class="card-content">BOXY FIT</div>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="fit" value="oversize">
+                            <div class="card-content">OVERSIZE</div>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="fit" value="regular">
+                            <div class="card-content">REGULAR</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="step-section">
+                    <span class="step-number">02</span>
+                    <h3>The Master Palette</h3>
+                    <div class="color-group">
+                        <h4>Achromatic & Basics</h4>
+                        <div class="color-options">
+                            <label class="color-circle" style="background:#ffffff; border: 1px solid #ddd;" title="White"><input type="radio" name="c" value="White" required></label>
+                            <label class="color-circle" style="background:#000000;" title="Black"><input type="radio" name="c" value="Black"></label>
+                            <label class="color-circle" style="background:#e0e0e0;" title="Light Gray "><input type="radio" name="c" value="Light Grey"></label>
+                            <label class="color-circle" style="background:#555555;" title="Dark Gray "><input type="radio" name="c" value="Dark Grey"></label>
+                            <label class="color-circle" style="background:#f5f5dc;" title="Beige"><input type="radio" name="c" value="Beige"></label>
+                        </div>
+                    </div>
+                    <div class="color-group">
+                        <h4>Deep & Royal</h4>
+                        <div class="color-options">
+                            <label class="color-circle" style="background:#800020;" title="Burgundy"><input type="radio" name="c" value="Burgundy"></label>
+                            <label class="color-circle" style="background:#000080;" title="Navy"><input type="radio" name="c" value="Navy Blue"></label>
+                            <label class="color-circle" style="background:#005f6b;" title="Teal"><input type="radio" name="c" value="Petrol Blue"></label>
+                            <label class="color-circle" style="background:#a52a2a;" title="Brick"><input type="radio" name="c" value="Brick Red"></label>
+                            <label class="color-circle" style="background:#4b5320;" title="Olive"><input type="radio" name="c" value="Olive Green"></label>
+                        </div>
+                    </div>
+                    <div class="color-group">
+                        <h4>Vibrant & Pastel</h4>
+                        <div class="color-options">
+                            <label class="color-circle" style="background:#ffc0cb;" title="Pink"><input type="radio" name="c" value="Pink"></label>
+                            <label class="color-circle" style="background:#98ff98;" title="Mint Green "><input type="radio" name="c" value="Mint Green"></label>
+                            <label class="color-circle" style="background:#9370db;" title="Mauve"><input type="radio" name="c" value="Mauve"></label>
+                            <label class="color-circle" style="background:#add8e6;" title="Baby Blue"><input type="radio" name="c" value="Baby Blue"></label>
+                            <label class="color-circle" style="background:#008000;" title="Green"><input type="radio" name="c" value="Green"></label>
+                            <label class="color-circle" style="background:#ffff00;" title="Yellow"><input type="radio" name="c" value="Yellow"></label>
+                            <label class="color-circle" style="background:#ffa500;" title="Orange"><input type="radio" name="c" value="Orange"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-section">
+                    <span class="step-number">03</span>
+                    <h3>Design Details</h3>
+                    <textarea id="description" name="description" placeholder="Describe placement, size, and design details..." required></textarea>
+                    
+                    <div class="file-upload">
+                        <label for="design-file" class="upload-label">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                            <span>Upload Designs (Select one or more)</span>
+                        </label>
+                        <input type="file" id="design-file" name="designFile" accept="image/*" multiple hidden>
+                    </div>
+
+                    <div id="preview-container"></div>
+                </div>
+
+                <button type="submit" class="submit-design-btn" id="submit-btn">SEND TO STUDIO</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-section brand-info">
+                <h2 class="footer-logo">NAP</h2>
+                <p>Designed for those who value unique style and premium quality. Your journey with NAP starts here.</p>
+            </div>
+
+            <div class="footer-section footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="about.html">About NAP</a></li>
+                    <li><a href="shipping.html">Shipping Policy</a></li>
+                    <li><a href="return.html">Refund Policy</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section footer-social">
+                <h3>Stay Connected</h3>
+                <p>Catch our latest drops on Instagram</p>
+                <a href="https://www.instagram.com/nap.egy" target="_blank" rel="noopener" class="instagram-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    <span>@nap.egy</span>
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NAP EGYPT. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+    /* الاهتزاز المعدل */
+    .shake-trigger {
+        animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shake {
+        10%, 90% { transform: translate3d(-2px, 0, 0); }
+        20%, 80% { transform: translate3d(3px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+        40%, 60% { transform: translate3d(5px, 0, 0); }
+    }
+
+    /* تنسيق رسالة الخطأ */
+    #search-error-msg {
+        color: #ff4d4d !important; /* أحمر صريح */
+        font-family: sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 15px;
+        text-align: center;
+        min-height: 20px;
+        display: block;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    /* لما تظهر الرسالة */
+    #search-error-msg.visible {
+        opacity: 1;
+    }
+
+    /* حالة الخطأ للـ Input والخط */
+    .input-error {
+        border-bottom: 2px solid #ff4d4d !important;
+    }
+</style>
+
+<div id="search-overlay" class="search-overlay">
+        <button class="close-search" id="close-search">
+            <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="search-content-box">
+            <div class="search-form-wrapper" id="shake-container">
+                <input type="text" placeholder="Select a Category..." class="search-input" id="main-search-input">
+                <div class="search-bar-line" id="search-line"></div>
+                <ul class="custom-dropdown" id="search-dropdown">
+                    <li data-value="NAP">HOME</li>
+                    <li data-value="product">PRODUCTS</li>
+                    <li data-value="return">RETURN & EXCHANGE POLICY</li>
+                    <li data-value="shipping">SHIPPING POLICY</li>
+                    <li data-value="contact">CONTACT US</li>
+                    <li data-value="boxy">BOXY FIT</li>
+                    <li data-value="oversize">OVERSIZE</li>
+                    <li data-value="regular">REGULAR</li>
+                    <li data-value="customize">CUSTOMIZE</li>
+                </ul>
+                <p class="search-hint">Pick a section to explore</p>
+                <span id="search-error-msg"></span>
+            </div>
+            <button class="mobile-close-btn" id="mobile-close-btn">Close Search</button>
+        </div>
+    </div>
+<script>
+const searchOverlay = document.getElementById('search-overlay');
+        const searchInput = document.getElementById('main-search-input');
+        const dropdown = document.getElementById('search-dropdown');
+        const searchTrigger = document.getElementById('search-trigger');
+        
+        // فتح السيرش
+        searchTrigger.onclick = (e) => {
+            e.stopPropagation();
+            searchOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeSearch = () => {
+            searchOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            dropdown.classList.remove('active');
+        };
+
+        // إغلاق السيرش عند الضغط على الأزرار
+        document.getElementById('close-search').onclick = closeSearch;
+        document.getElementById('mobile-close-btn').onclick = closeSearch;
+
+        // --- التعديل: إغلاق السيرش عند الضغط في أي مكان فارغ ---
+        searchOverlay.onclick = (e) => {
+            if (e.target === searchOverlay) {
+                closeSearch();
+            }
+        };
+
+        // منع إغلاق السيرش عند الضغط داخل صندوق البحث نفسه
+        document.querySelector('.search-content-box').onclick = (e) => {
+            e.stopPropagation();
+        };
+
+        // فتح القائمة المنسدلة
+        searchInput.onclick = (e) => { 
+            e.stopPropagation(); 
+            dropdown.classList.toggle('active'); 
+        };
+
+        const siteMap = { 
+            "NAP": "NAP.html", 
+            "product": "product.html", 
+            "return": "return.html", 
+            "shipping": "shipping.html", 
+            "contact": "contact.html", 
+            "boxy": "boxy.html", 
+            "oversize": "oversize.html", 
+            "regular": "regular.html", 
+            "customize": "customize.html" 
+        };
+
+        dropdown.querySelectorAll('li').forEach(item => {
+            item.onclick = () => {
+                const val = item.getAttribute('data-value');
+                searchInput.value = item.innerText;
+                if (siteMap[val]) {
+                    window.location.href = siteMap[val];
+                }
+            };
+        });
+
+        document.addEventListener('click', () => {
+            dropdown.classList.remove('active');
+        });
+    
+
+    // --- ثانياً: عرض اسم المستخدم ---
+    const storedName = localStorage.getItem('userName');
+    const userLink = document.getElementById('user-link');
+    const regLink = document.getElementById('reg-link');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (storedName && storedName !== "undefined" && storedName !== "null") {
+        if(userLink) {
+            userLink.innerText = `Hello, ${storedName.split(' ')[0]}`;
+            userLink.href = "account.html"; 
+        }
+        if(regLink) regLink.style.display = 'none';
+        if(logoutBtn) {
+            logoutBtn.style.display = 'block';
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                window.location.reload();
+            });
+        }
+    }
+
+
+// --- ثالثاً: معاينة وحذف الصور ---
+let selectedFiles = [];
+const fileInput = document.getElementById('design-file');
+const previewContainer = document.getElementById('preview-container');
+
+if (fileInput) {
+    fileInput.addEventListener('change', function() {
+        const files = Array.from(this.files);
+        files.forEach(file => {
+            if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
+                selectedFiles.push(file);
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'preview-item';
+                    div.innerHTML = `
+                        <img src="${e.target.result}">
+                        <button type="button" class="remove-btn" onclick="removeImage('${file.name}', this)">×</button>
+                    `;
+                    previewContainer.appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+}
+
+function removeImage(fileName, btnElement) {
+    selectedFiles = selectedFiles.filter(f => f.name !== fileName);
+    btnElement.parentElement.remove();
+}
+
+// ✅ دالة ضغط الصور الجديدة لزيادة السرعة
+async function compressImage(base64Str) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.src = base64Str;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800; 
+            const scale = MAX_WIDTH / img.width;
+            canvas.width = MAX_WIDTH;
+            canvas.height = img.height * scale;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            // تحويل لـ JPEG وضغط 60%
+            resolve(canvas.toDataURL('image/jpeg', 0.6));
+        };
+    });
+}
+
+// --- رابعاً: دوال الرسائل المنبثقة ---
+const msgContainer = document.getElementById('message-container');
+function showPopup(title, text, btnText, redirect = false) {
+    if(!msgContainer) return;
+    msgContainer.innerHTML = `
+        <div class="custom-overlay">
+            <div class="message-box">
+                <h2>${title}</h2>
+                <p>${text}</p>
+                <button id="popup-close-btn">${btnText}</button>
+            </div>
+        </div>`;
+    
+    document.getElementById('popup-close-btn').onclick = () => {
+        msgContainer.innerHTML = '';
+        if(redirect) window.location.href = 'cart.html';
+    };
+}
+
+// --- خامساً: إرسال التصميم والحفظ في الكارت ---
+const customizeForm = document.getElementById('customizeForm');
+if (customizeForm) {
+    customizeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (selectedFiles.length === 0) {
+            showPopup("Hold on!", "Please upload at least one design image.", "Got it");
+            return;
+        }
+
+        if (selectedFiles.length > 5) {
+            showPopup("Too many images!", "You can upload up to 5 images only.", "OK");
+            return;
+        }
+
+        const fitElement = document.querySelector('input[name="fit"]:checked');
+        const colorElement = document.querySelector('input[name="c"]:checked');
+
+        if (!fitElement) {
+            showPopup("Missing Fit!", "Please select a fit.", "OK");
+            return;
+        }
+
+        if (!colorElement) {
+            showPopup("Missing Color!", "Please select a color.", "OK");
+            return;
+        }
+        
+        const fit = fitElement.value;
+        const color = colorElement.value;
+        const description = document.getElementById('description').value;
+        const submitBtn = document.getElementById('submit-btn');
+
+        // تغيير حالة الزرار عشان المستخدم يعرف إن فيه معالجة
+        submitBtn.innerText = "Processing Designs...";
+        submitBtn.disabled = true;
+
+        const tempOrderId = 'CUSTOM-' + Date.now();
+        
+        const imagePromises = selectedFiles.map(file => {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    // ✅ ضغط الصورة قبل الحفظ
+                    const compressed = await compressImage(e.target.result);
+                    resolve(compressed);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        Promise.all(imagePromises).then(base64Images => {
+
+            const orderData = {
+                orderId: tempOrderId,
+                name: localStorage.getItem('userName') || "Guest",
+                email: localStorage.getItem('userEmail') || "No Email",
+                fit: fit,
+                color: color,
+                description: description,
+                images: base64Images
+            };
+
+            localStorage.setItem('pending_custom_design_' + tempOrderId, JSON.stringify(orderData));
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push({
+                id: tempOrderId,
+                name: "Custom Design (" + fit + ")",
+                price: 200,
+                image: base64Images[0],
+                quantity: 1,
+                isCustom: true,
+                details: orderData
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // إرسال للسيرفر في الخلفية
+            fetch('http://localhost:3000/customize-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            })
+            .catch(err => console.log("Sync failed, but item saved locally."));
+
+            showPopup("Sent to Cart!", "Your design has been added and optimized for speed.", "Go to Cart", true);
+        });
+    });
+}
+</script>
+</body>
+</html>

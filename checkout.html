@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAP | Checkout</title>
+    <link rel="stylesheet" href="NAP.css">
+    <style>
+        .payment-methods { margin-top: 20px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .payment-option { padding: 15px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-bottom: 1px solid #ddd; transition: background 0.3s; }
+        .payment-option:last-child { border-bottom: none; }
+        .payment-option:hover { background: #f9f9f9; }
+        .instapay-details { background: #f0f8ff; padding: 15px; margin-top: 10px; border-radius: 8px; font-size: 14px; display: none; border: 1px dashed #007bff; }
+        .instapay-link-btn { display: inline-block; margin-top: 10px; padding: 8px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: 600; }
+        input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px white inset !important; }
+        
+        /* التنبيه المحدث للـ Custom */
+        #custom-notice { 
+            background: #fff3cd; 
+            color: #856404; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            border-radius: 5px; 
+            font-size: 13px; 
+            display: none; 
+            border: 1px solid #ffeeba;
+            line-height: 1.4;
+        }
+
+        .deposit-info { font-size: 12px; color: #d9534f; margin-top: 5px; display: none; font-weight: bold; }
+        .confirmation-area { margin-top: 15px; padding: 10px; border-top: 1px solid #cce5ff; }
+        .confirmation-area label { display: flex; align-items: center; gap: 8px; color: #d9534f; font-weight: 600; cursor: pointer; }
+        .success-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .modal-content h2 { color: #2ecc71; margin-bottom: 10px; }
+        .modal-content p { color: #333; line-height: 1.6; margin-bottom: 20px; }
+        .modal-btn { background: #000; color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
+
+        select.full-width {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="checkout-page">
+
+    <div id="order-success-modal" class="success-modal">
+        <div class="modal-content">
+            <h2>Order Placed! 🎉</h2>
+            <p>Thank you for choosing NAP. We will contact you via <b>WhatsApp</b> shortly to confirm your order details and final pricing.</p>
+            <button type="button" class="modal-btn" onclick="closeSuccessModal()">Great!</button>
+        </div>
+    </div>
+
+    <div class="checkout-layout">
+        <div class="checkout-form-side">
+            <header class="checkout-header">
+                <h1 class="logo-text">NAP</h1>
+                <nav class="breadcrumb">
+                    <span>Cart</span> ❯ <span class="active">Information & Payment</span>
+                </nav>
+            </header>
+
+            <form id="checkout-form">
+                <div id="custom-notice">
+                    ⚠️ <b>For Custom Orders:</b> Only the <b>200 EGP</b> is required now as a deposit via InstaPay. 
+                    The remaining product price + shipping fees will be paid upon delivery.
+                </div>
+
+                <section class="form-section">
+                    <h3>Contact Information</h3>
+                    <input type="email" id="customer-email" name="email" placeholder="Email address" class="full-width" autocomplete="email" required>
+                </section>
+
+                <section class="form-section">
+                    <h3>Shipping Address</h3>
+                    <div class="input-row">
+                        <input type="text" id="first-name" name="fname" placeholder="First name" autocomplete="given-name" required>
+                        <input type="text" id="last-name" name="lname" placeholder="Last name" autocomplete="family-name" required>
+                    </div>
+                    <input type="text" id="address" name="shipping-address" placeholder="Address (Street, Building, Apartment)" class="full-width" autocomplete="shipping street-address" required>
+                    
+                    <div class="input-row">
+                        <select id="city" name="shipping-city" required onchange="calculateShipping()">
+                            <option value="" disabled selected>Select Governorate</option>
+                            <option value="Cairo" data-price="75">Cairo</option>
+                            <option value="Giza" data-price="75">Giza</option>
+                            <option value="Alexandria" data-price="90">Alexandria</option>
+                            <optgroup label="Lower Egypt - 111 EGP">
+                                <option value="Dakahlia" data-price="111">Dakahlia</option>
+                                <option value="Damietta" data-price="111">Damietta</option>
+                                <option value="Beheira" data-price="111">Beheira</option>
+                                <option value="Sharqia" data-price="111">Sharqia</option>
+                                <option value="Kalyubia" data-price="111">Kalyubia</option>
+                                <option value="Kafr El Sheikh" data-price="111">Kafr El Sheikh</option>
+                                <option value="Gharbia" data-price="111">Gharbia</option>
+                                <option value="Monufia" data-price="111">Monufia</option>
+                                <option value="Ismailia" data-price="111">Ismailia</option>
+                                <option value="Suez" data-price="111">Suez</option>
+                                <option value="Port Said" data-price="111">Port Said</option>
+                            </optgroup>
+                            <optgroup label="Upper Egypt - 138 EGP">
+                                <option value="Beni Suef" data-price="138">Beni Suef</option>
+                                <option value="Fayoum" data-price="138">Fayoum</option>
+                                <option value="Minya" data-price="138">Minya</option>
+                                <option value="Asyut" data-price="138">Asyut</option>
+                                <option value="Sohag" data-price="138">Sohag</option>
+                                <option value="Qena" data-price="138">Qena</option>
+                                <option value="Luxor" data-price="138">Luxor</option>
+                                <option value="Aswan" data-price="138">Aswan</option>
+                                <option value="Red Sea" data-price="138">Red Sea</option>
+                                <option value="New Valley" data-price="138">New Valley</option>
+                            </optgroup>
+                        </select>
+                        <input type="tel" id="phone" name="tel" placeholder="Phone Number" autocomplete="tel" required>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods" id="methods-container">
+                        <label class="payment-option" id="cod-wrapper">
+                            <input type="radio" id="cod-radio" name="payment_method" value="COD" checked onclick="toggleInstaPay(false)">
+                            <span>Cash on Delivery (COD)</span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" id="instapay-radio" name="payment_method" value="InstaPay" onclick="toggleInstaPay(true)">
+                            <span>InstaPay Transfer</span>
+                        </label>
+                    </div>
+
+                    <div id="instapay-info" class="instapay-details">
+                        <p>Address: <strong>napegy@instapay</strong></p>
+                        <a href="https://ipn.eg/S/napegy/instapay/0qqYOe" target="_blank" class="instapay-link-btn">Pay via InstaPay Link</a>
+                        <div class="confirmation-area">
+                            <label>
+                                <input type="checkbox" id="confirm-transfer" onchange="validateForm()">
+                                I confirm that I have transferred the deposit via InstaPay
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="form-footer-v2">
+                    <button type="submit" id="submit-btn" class="continue-btn">Complete Order</button>
+                    <a href="cart.html" class="back-to-cart-link">❮ Return to cart</a>
+                </div>
+            </form>
+        </div>
+
+        <aside class="checkout-summary-side">
+            <div class="order-items-list" id="checkout-items-list"></div>
+            <div class="price-calculations">
+                <div class="calc-row"><span>Subtotal</span><span id="checkout-subtotal">0.00</span></div>
+                <div class="calc-row"><span>Shipping</span><span id="shipping-amount">Select City</span></div>
+                <div class="calc-row total-row">
+                    <span>Total</span>
+                    <div>
+                        <span class="final-price" id="checkout-total">0.00</span>
+                        <div id="deposit-label" class="deposit-info">* This total includes the 200 EGP deposit</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+<script>
+    let currentShipping = 0;
+    let currentSubtotal = 0;
+    let hasCustomItem = false;
+
+    function toggleInstaPay(show) {
+        const info = document.getElementById('instapay-info');
+        if (info) info.style.display = show ? 'block' : 'none';
+        validateForm();
+    }
+
+    function validateForm() {
+        const submitBtn = document.getElementById('submit-btn');
+        const instapayRadio = document.getElementById('instapay-radio');
+        const confirmCheckbox = document.getElementById('confirm-transfer');
+
+        if (instapayRadio && instapayRadio.checked) {
+            submitBtn.disabled = !confirmCheckbox.checked;
+            submitBtn.style.opacity = confirmCheckbox.checked ? "1" : "0.5";
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = "1";
+        }
+    }
+
+    function calculateShipping() {
+        const citySelect = document.getElementById('city');
+        const shippingDisplay = document.getElementById('shipping-amount');
+        const totalDisplay = document.getElementById('checkout-total');
+        
+        const selectedOption = citySelect.options[citySelect.selectedIndex];
+        const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+
+        // الآن يتم حساب الشحن دائماً ليعرف العميل التكلفة
+        currentShipping = price;
+        shippingDisplay.innerText = `EGP ${currentShipping.toFixed(2)}`;
+        
+        totalDisplay.innerText = `EGP ${(currentSubtotal + currentShipping).toFixed(2)}`;
+    }
+
+    function closeSuccessModal() {
+        document.getElementById('order-success-modal').style.display = 'none';
+        window.location.href = 'NAP.html';
+    }
+
+    function loadCheckoutSummary() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const itemsList = document.getElementById('checkout-items-list');
+        const depositLabel = document.getElementById('deposit-label');
+        const customNotice = document.getElementById('custom-notice');
+        const codWrapper = document.getElementById('cod-wrapper');
+        const instapayRadio = document.getElementById('instapay-radio');
+
+        if (cart.length === 0) { window.location.href = 'cart.html'; return; }
+
+        currentSubtotal = 0;
+        hasCustomItem = cart.some(item => item.isCustom);
+
+        itemsList.innerHTML = '';
+        cart.forEach(item => {
+            currentSubtotal += (item.price * item.quantity);
+            itemsList.innerHTML += `
+                <div class="order-item">
+                    <div class="item-img-wrapper">
+                        <img src="${item.image}">
+                        <span class="item-quantity">${item.quantity}</span>
+                    </div>
+                    <div class="item-details">
+                        <p class="item-name">${item.name}</p>
+                        <span>${item.size || 'Custom Design'}</span>
+                    </div>
+                    <span class="item-price">EGP ${item.price * item.quantity}</span>
+                </div>`;
+        });
+
+        if (hasCustomItem) {
+            if(depositLabel) depositLabel.style.display = 'block';
+            if(customNotice) customNotice.style.display = 'block';
+            if(codWrapper) codWrapper.style.display = 'none';
+            if(instapayRadio) {
+                instapayRadio.checked = true;
+                toggleInstaPay(true);
+            }
+        }
+
+        document.getElementById('checkout-subtotal').innerText = `EGP ${currentSubtotal.toFixed(2)}`;
+        calculateShipping();
+    }
+
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const city = document.getElementById('city').value;
+        if(!city) { alert("Please select your Governorate first!"); return; }
+
+        const btn = document.getElementById('submit-btn');
+        btn.innerText = "Sending Order... ⏳";
+        btn.disabled = true;
+
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let allCustomDetails = [];
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('pending_custom_design')) {
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if (data) allCustomDetails.push(data);
+                } catch(err) { console.log("Data error skipped"); }
+            }
+        });
+
+        const orderData = {
+            customer: {
+                name: document.getElementById('first-name').value + " " + document.getElementById('last-name').value,
+                email: document.getElementById('customer-email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value + ", " + document.getElementById('city').value
+            },
+            payment: document.querySelector('input[name="payment_method"]:checked').value,
+            cart_items: cart.map(item => ({
+                name: item.name,
+                qty: item.quantity,
+                price: item.price,
+                size: item.size || 'Custom'
+            })),
+            shipping_fee: currentShipping,
+            total: document.getElementById('checkout-total').innerText,
+            custom_designs: allCustomDetails
+        };
+
+        document.getElementById('order-success-modal').style.display = 'flex';
+
+        fetch('http://localhost:3000/place-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        })
+        .then(res => res.json())
+        .catch(err => console.log("Error:", err));
+
+        localStorage.removeItem('cart');
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('pending_custom_design')) localStorage.removeItem(key);
+        });
+    });
+
+    window.onload = loadCheckoutSummary;
+</script>
+</body>
+</html>

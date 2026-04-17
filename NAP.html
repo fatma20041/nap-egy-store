@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAP Store | Home</title>
+    <link rel="stylesheet" href="NAP.css">
+</head>
+<body>
+
+    <header class="yonyo-header">
+        <div class="header-wrapper">
+            <nav class="nav-area">
+                <ul>
+                    <li><a href="NAP.html" class="active">Home</a></li>
+                    <li><a href="product.html">Products</a></li>
+                    <li><a href="return.html">Return & Exchange Policy</a></li>
+                    <li><a href="shipping.html">Shipping Policy</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="logo-area">
+                <a href="NAP.html">
+                    <img src="logo.jpeg" alt="NAP Logo" class="main-logo"> 
+                </a>
+            </div>
+
+            <div class="icons-area">
+               <a href="javascript:void(0)" class="icon-link" id="search-trigger">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+               </a>
+
+                <div class="user-dropdown" id="user-menu">
+                    <a href="#" class="icon-link">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="login.html" id="user-link">Login</a>
+                        <a href="register.html" id="reg-link">Register</a>
+                        <hr>
+                        <a href="account.html">My Account</a>
+                        <a href="#" id="logout-btn" style="display:none; color: red;">Logout</a>
+                    </div>
+                </div>
+
+                <a href="cart.html" class="icon-link">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="announcement-bar">
+        <div class="scrolling-text">
+            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-image">
+            <img src="main.jpeg" alt="Winter Collection" loading="lazy">
+        </div>
+        <div class="hero-content">
+            <h1>Where Style Meets Soul</h1>
+            <a href="product.html" class="shop-btn">SHOP NOW</a>
+        </div>
+    </section>
+
+    <section class="collections-section">
+        <div class="collections-container">
+            <div class="collections-header">
+                <span class="sub-title">Explore Our Style</span>
+                <h2>NAP COLLECTIONS</h2>
+                <div class="header-line"></div>
+            </div>
+
+            <div class="collections-grid">
+                <a href="boxy.html" class="collection-item">
+                    <div class="collection-image"><img src="boxy-img.jpg" alt="Boxy Fit" class="base-img"></div>
+                    <div class="collection-info"><h3>BOXY FIT</h3><div class="shop-collection-link">Shop Now ➔</div></div>
+                </a>
+                <a href="oversize.html" class="collection-item">
+                    <div class="collection-image"><img src="oversize-img.jpg" alt="Oversize" class="base-img"></div>
+                    <div class="collection-info"><h3>OVERSIZE</h3><div class="shop-collection-link">Shop Now ➔</div></div>
+                </a>
+                <a href="regular.html" class="collection-item">
+                    <div class="collection-image"><img src="regular-img.jpg" alt="Regular Fit" class="base-img"></div>
+                    <div class="collection-info"><h3>REGULAR</h3><div class="shop-collection-link">Shop Now ➔</div></div>
+                </a>
+                <a href="customize.html" class="collection-item customize-special">
+                    <div class="collection-image"><img src="customize-img.jpg" alt="Customize Your Own" class="base-img"></div>
+                    <div class="collection-info"><h3>CUSTOMIZE YOUR OWN</h3><div class="shop-collection-link">Start Now ➔</div></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="products-section">
+        <div class="products-container">
+            <div class="products-header">
+                <span class="sub-title">Must-Have Pieces</span>
+                <h2>THE DAILY DROP</h2>
+                <div class="header-line"></div>
+            </div>
+            <div class="products-grid" id="daily-drop-list"></div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-section brand-info">
+                <h2 class="footer-logo">NAP</h2>
+                <p>Designed for those who value unique style and premium quality. Your journey with NAP starts here.</p>
+            </div>
+            <div class="footer-section footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="about.html">About NAP</a></li>
+                    <li><a href="shipping.html">Shipping Policy</a></li>
+                    <li><a href="return.html">Refund Policy</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section footer-social">
+                <h3>Stay Connected</h3>
+                <p>Catch our latest drops on Instagram</p>
+                <a href="https://www.instagram.com/nap.egy" target="_blank" rel="noopener" class="instagram-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    <span>@nap.egy</span>
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 NAP EGYPT. All Rights Reserved.</p></div>
+    </footer>
+
+    <style>
+        .add-to-cart-btn {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 12px 15px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .add-to-cart-btn:hover { background: #333; }
+        
+        .shake-trigger { animation: shake 0.5s both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(3px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+        }
+        #search-error-msg {
+            color: #ff4d4d;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #search-error-msg.visible { opacity: 1; }
+    </style>
+
+    <div id="search-overlay" class="search-overlay">
+        <button class="close-search" id="close-search">
+            <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="search-content-box">
+            <div class="search-form-wrapper" id="shake-container">
+                <input type="text" placeholder="Select a Category..." class="search-input" id="main-search-input">
+                <div class="search-bar-line" id="search-line"></div>
+                <ul class="custom-dropdown" id="search-dropdown">
+                    <li data-value="NAP">HOME</li>
+                    <li data-value="product">PRODUCTS</li>
+                    <li data-value="return">RETURN & EXCHANGE POLICY</li>
+                    <li data-value="shipping">SHIPPING POLICY</li>
+                    <li data-value="contact">CONTACT US</li>
+                    <li data-value="boxy">BOXY FIT</li>
+                    <li data-value="oversize">OVERSIZE</li>
+                    <li data-value="regular">REGULAR</li>
+                    <li data-value="customize">CUSTOMIZE</li>
+                </ul>
+                <p class="search-hint">Pick a section to explore</p>
+                <span id="search-error-msg"></span>
+            </div>
+            <button class="mobile-close-btn" id="mobile-close-btn">Close Search</button>
+        </div>
+    </div>
+
+    <script>
+    async function loadDailyDrop() {
+        try {
+            const response = await fetch('http://localhost:3000/products');
+            const allProducts = await response.json();
+            const grid = document.getElementById('daily-drop-list');
+            const latestProducts = allProducts.slice(-4).reverse();
+            grid.innerHTML = ''; 
+
+            latestProducts.forEach(p => {
+                const isSoldOut = p.stock <= 0;
+                grid.innerHTML += `
+                    <div class="product-item">
+                        <div class="product-link">
+                            <div class="product-image"><img src="${p.image}" alt="${p.name}"></div>
+                            <div class="product-info">
+                                <h3 class="product-title">${p.name}</h3>
+                                <p class="product-price">${p.price} EGP</p>
+                                <button class="add-to-cart-btn" 
+                                    ${isSoldOut ? 'disabled style="background:#ccc;"' : ''} 
+                                    onclick="addToCart('${p.name}', ${p.price}, '${p.image}', event)">
+                                    ${isSoldOut ? 'OUT OF STOCK' : 'ADD TO CART'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (err) {
+    console.error("Error loading products:", err);
+    const grid = document.getElementById('daily-drop-list');
+    grid.innerHTML = "<p>Failed to load products</p>";
+}
+    }
+
+    function addToCart(name, price, image, event) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingItem = cart.find(item => item.name === name);
+        if (existingItem) { existingItem.quantity += 1; } 
+        else { cart.push({ name, price, image, quantity: 1 }); }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = "ADDED ✅";
+        btn.style.backgroundColor = "#27ae60"; 
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.backgroundColor = "#000"; 
+        }, 1500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadDailyDrop();
+
+        const storedName = localStorage.getItem('userName');
+        if (storedName && storedName !== "null") {
+            const userLink = document.getElementById('user-link');
+            if (userLink) {
+                userLink.innerText = `Hello, ${storedName.split(' ')[0]}`;
+                userLink.href = "account.html";
+            }
+            if (document.getElementById('reg-link')) document.getElementById('reg-link').style.display = 'none';
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.style.display = 'block';
+                logoutBtn.onclick = () => { localStorage.clear(); location.reload(); };
+            }
+        }
+
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchInput = document.getElementById('main-search-input');
+        const dropdown = document.getElementById('search-dropdown');
+        const searchTrigger = document.getElementById('search-trigger');
+        
+        // فتح السيرش
+        searchTrigger.onclick = (e) => {
+            e.stopPropagation();
+            searchOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeSearch = () => {
+            searchOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            dropdown.classList.remove('active');
+        };
+
+        // إغلاق السيرش عند الضغط على الأزرار
+        document.getElementById('close-search').onclick = closeSearch;
+        document.getElementById('mobile-close-btn').onclick = closeSearch;
+
+        // --- التعديل: إغلاق السيرش عند الضغط في أي مكان فارغ ---
+        searchOverlay.onclick = (e) => {
+            // لو الضغطة كانت على الـ overlay نفسه مش على الصندوق الأبيض الداخلي
+            if (e.target === searchOverlay) {
+                closeSearch();
+            }
+        };
+
+        // منع إغلاق السيرش عند الضغط داخل صندوق البحث نفسه
+        document.querySelector('.search-content-box').onclick = (e) => {
+            e.stopPropagation();
+        };
+
+        // فتح القائمة المنسدلة
+        searchInput.onclick = (e) => { 
+            e.stopPropagation(); 
+            dropdown.classList.toggle('active'); 
+        };
+
+        // الخريطة المحدثة لتطابق data-value
+        const siteMap = { 
+            "NAP": "NAP.html", 
+            "product": "product.html", 
+            "return": "return.html", 
+            "shipping": "shipping.html", 
+            "contact": "contact.html", 
+            "boxy": "boxy.html", 
+            "oversize": "oversize.html", 
+            "regular": "regular.html", 
+            "customize": "customize.html" 
+        };
+
+        dropdown.querySelectorAll('li').forEach(item => {
+            item.onclick = () => {
+                const val = item.getAttribute('data-value');
+                searchInput.value = item.innerText;
+                if (siteMap[val]) {
+                    window.location.href = siteMap[val];
+                }
+            };
+        });
+
+        // إغلاق القائمة المنسدلة لو ضغطت براها وهي مفتوحة جوه السيرش
+        document.addEventListener('click', () => {
+            dropdown.classList.remove('active');
+        });
+    });
+    </script>
+</body>
+</html>

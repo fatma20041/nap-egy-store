@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAP Store | Register</title>
+    <link rel="stylesheet" href="NAP.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>CREATE ACCOUNT</h2>
+            <p>Join the NAP community</p>
+            
+            <form id="registerForm">
+                <div class="input-group">
+                    <input type="text" name="fullName" placeholder="Full Name" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-btn">SIGN UP</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Log in</a></p>
+                <a href="NAP.html" class="back-home">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const form = document.getElementById('registerForm');
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // بيمنع الصفحة إنها تحمل وتروح لشاشة بيضاء
+        
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        try {
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // --- التعديل هنا ---
+                // بنحفظ الاسم والإيميل اللي المستخدم لسه كاتبهم حالاً
+                // عشان صفحة My Account والـ Header يعرفوا إن فيه حد دخل
+                localStorage.setItem('userName', data.fullName); 
+                localStorage.setItem('userEmail', data.email);
+
+                Swal.fire({
+                    title: 'Welcome to NAP! 🎉',
+                    text: 'Your account has been created successfully. Ready to explore?',
+                    icon: 'success',
+                    confirmButtonText: 'Start Shopping', 
+                    confirmButtonColor: '#000' 
+                }).then(() => {
+                    // تحويل المستخدم للصفحة الرئيسية وهو "مسجل دخول" فعلياً
+                    window.location.replace('NAP.html'); 
+                });
+            } else {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: result.message || 'Something went wrong',
+                    icon: 'error',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#000'
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Make sure your server is running!',
+                icon: 'warning',
+                confirmButtonColor: '#000'
+            });
+        }
+    });
+    
+</script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAP Store | My Account</title>
+    <link rel="stylesheet" href="NAP.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* تنسيق قائمة البحث المخصصة لتظهر في المنتصف كما طلبت */
+        .custom-dropdown {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            position: fixed; 
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 400px;
+            max-height: 0; 
+            opacity: 0;
+            visibility: hidden;
+            overflow-y: auto;
+            background: #fff;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            border-radius: 15px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 9999;
+            text-align: left;
+        }
+
+        .custom-dropdown.active {
+            max-height: 60vh;
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+            padding: 20px 0;
+        }
+
+        .custom-dropdown li {
+            padding: 15px 25px;
+            cursor: pointer;
+            color: #000;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .custom-dropdown li:hover {
+            background: #f9f9f9;
+            padding-left: 35px;
+            color: #4CAF50;
+        }
+
+        /* الاهتزاز ورسائل الخطأ */
+        .shake-trigger { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(3px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+            40%, 60% { transform: translate3d(5px, 0, 0); }
+        }
+
+        #search-error-msg {
+            color: #ff4d4d !important;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #search-error-msg.visible { opacity: 1; }
+        .input-error { border-bottom: 2px solid #ff4d4d !important; }
+    </style>
+</head>
+<body>
+    <header class="yonyo-header">
+        <div class="header-wrapper">
+            <nav class="nav-area">
+                <ul>
+                    <li><a href="NAP.html">Home</a></li>
+                    <li><a href="product.html">Products</a></li>
+                    <li><a href="return.html">Return & Exchange Policy</a></li>
+                    <li><a href="shipping.html">Shipping Policy</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="logo-area">
+                <a href="NAP.html">
+                    <img src="logo.jpeg" alt="NAP Logo" loading="lazy" class="main-logo"> 
+                </a>
+            </div>
+
+            <div class="icons-area">
+                <a href="#" class="icon-link" id="search-trigger"></a>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </a>
+
+                <div class="user-dropdown">
+                    <a href="#" class="icon-link">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="login.html" id="user-link">Login</a>
+                        <a href="register.html" id="reg-link">Register</a>
+                        <hr>
+                        <a href="account.html">My Account</a>
+                        <a href="#" id="logout-btn-header" style="display:none; color: red;">Logout</a>
+                    </div>
+                </div> 
+                <a href="cart.html" class="icon-link">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="announcement-bar">
+        <div class="scrolling-text">
+            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>Free shipping for orders above 999 EGP — Shop Now! &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+    </div>
+
+    <section class="account-section">
+        <div class="account-container">
+            <aside class="account-sidebar">
+                <h2>My Account</h2>
+                <ul>
+                    <li><a href="account.html" class="active">Account Details</a></li>
+                    <li><a href="#" id="sidebar-logout">Logout</a></li>
+                </ul>
+            </aside>
+
+            <div class="account-content">
+                <h3>Account Details</h3>
+                <form class="account-form" id="updateAccountForm">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" id="accFullName" required placeholder="Loading...">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address (Cannot be changed)</label>
+                        <input type="email" id="accEmail" disabled style="background: #f0f0f0; cursor: not-allowed;">
+                    </div>
+                    <div class="input-group">
+                        <label>New Password</label>
+                        <input type="password" id="accNewPassword" placeholder="Type new password to change">
+                        <small style="color: #666; font-size: 12px;">Leave blank if you don't want to change it.</small>
+                    </div>
+                    <button type="submit" class="save-btn">SAVE CHANGES</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-section brand-info">
+                <h2 class="footer-logo">NAP</h2>
+                <p>Designed for those who value unique style and premium quality. Your journey with NAP starts here.</p>
+            </div>
+
+            <div class="footer-section footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="about.html">About NAP</a></li>
+                    <li><a href="shipping.html">Shipping Policy</a></li>
+                    <li><a href="return.html">Refund Policy</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section footer-social">
+                <h3>Stay Connected</h3>
+                <p>Catch our latest drops on Instagram</p>
+                <a href="https://www.instagram.com/nap.egy" target="_blank" rel="noopener" class="instagram-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    <span>@nap.egy</span>
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NAP EGYPT. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+   <div id="search-overlay" class="search-overlay">
+        <button class="close-search" id="close-search">
+            <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="search-content-box">
+            <div class="search-form-wrapper" id="shake-container">
+                <input type="text" placeholder="Select a Category..." class="search-input" id="main-search-input">
+                <div class="search-bar-line" id="search-line"></div>
+                <ul class="custom-dropdown" id="search-dropdown">
+                    <li data-value="NAP">HOME</li>
+                    <li data-value="product">PRODUCTS</li>
+                    <li data-value="return">RETURN & EXCHANGE POLICY</li>
+                    <li data-value="shipping">SHIPPING POLICY</li>
+                    <li data-value="contact">CONTACT US</li>
+                    <li data-value="boxy">BOXY FIT</li>
+                    <li data-value="oversize">OVERSIZE</li>
+                    <li data-value="regular">REGULAR</li>
+                    <li data-value="customize">CUSTOMIZE</li>
+                </ul>
+                <p class="search-hint">Pick a section to explore</p>
+                <span id="search-error-msg"></span>
+            </div>
+            <button class="mobile-close-btn" id="mobile-close-btn">Close Search</button>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 1. تهيئة بيانات المستخدم ---
+        const storedName = localStorage.getItem('userName');
+        const storedEmail = localStorage.getItem('userEmail');
+        const userLink = document.getElementById('user-link');
+        const regLink = document.getElementById('reg-link');
+        const logoutBtnHeader = document.getElementById('logout-btn-header');
+
+        if (storedName && storedName !== "undefined") {
+            userLink.innerText = `Hello, ${storedName.split(' ')[0]}`;
+            if(regLink) regLink.style.display = 'none';
+            if(logoutBtnHeader) logoutBtnHeader.style.display = 'block';
+            
+            document.getElementById('accFullName').value = storedName;
+            document.getElementById('accEmail').value = storedEmail || "";
+        } else {
+            window.location.href = 'login.html';
+        }
+
+        // --- 2. وظيفة حفظ التعديلات (تصحيح الخطأ) ---
+        const updateForm = document.getElementById('updateAccountForm');
+        if (updateForm) {
+            updateForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fullName = document.getElementById('accFullName').value;
+                const email = document.getElementById('accEmail').value;
+                const newPassword = document.getElementById('accNewPassword').value;
+
+                try {
+                    const response = await fetch('http://localhost:3000/update-account', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, fullName, newPassword })
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        localStorage.setItem('userName', fullName);
+                        Swal.fire({ title: 'Success!', text: 'Account updated successfully', icon: 'success', confirmButtonColor: '#000' })
+                        .then(() => window.location.reload());
+                    } else {
+                        Swal.fire('Error', result.message || 'Update failed', 'error');
+                    }
+                } catch (err) {
+                    Swal.fire('Error', 'Server is not responding!', 'error');
+                }
+            });
+        }
+
+       const searchOverlay = document.getElementById('search-overlay');
+        const searchInput = document.getElementById('main-search-input');
+        const dropdown = document.getElementById('search-dropdown');
+        const searchTrigger = document.getElementById('search-trigger');
+        
+        // فتح السيرش
+        searchTrigger.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+            searchOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeSearch = () => {
+            searchOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            if (dropdown) dropdown.classList.remove('active');
+        };
+
+        // إغلاق السيرش عند الضغط على الأزرار
+        document.getElementById('close-search').onclick = closeSearch;
+        document.getElementById('mobile-close-btn').onclick = closeSearch;
+
+        // --- التعديل: إغلاق السيرش عند الضغط في أي مكان فارغ ---
+        searchOverlay.onclick = (e) => {
+            // لو الضغطة كانت على الـ overlay نفسه مش على الصندوق الأبيض الداخلي
+            if (e.target === searchOverlay) {
+                closeSearch();
+            }
+        };
+
+        // منع إغلاق السيرش عند الضغط داخل صندوق البحث نفسه
+        document.querySelector('.search-content-box').onclick = (e) => {
+            e.stopPropagation();
+        };
+
+        // فتح القائمة المنسدلة
+        if (searchInput) {
+    searchInput.onclick = (e) => {
+        e.stopPropagation();
+        if (dropdown) dropdown.classList.toggle('active');
+    };
+}
+        
+        // الخريطة المحدثة لتطابق data-value
+        const siteMap = { 
+            "NAP": "NAP.html", 
+            "product": "product.html", 
+            "return": "return.html", 
+            "shipping": "shipping.html", 
+            "contact": "contact.html", 
+            "boxy": "boxy.html", 
+            "oversize": "oversize.html", 
+            "regular": "regular.html", 
+            "customize": "customize.html" 
+        };
+
+        
+         if (dropdown) {
+    dropdown.querySelectorAll('li').forEach(item => {
+        item.onclick = () => {
+            const val = item.getAttribute('data-value');
+            searchInput.value = item.innerText;
+            if (siteMap[val]) {
+                window.location.href = siteMap[val];
+            }
+        };
+    });
+}
+
+        // إغلاق القائمة المنسدلة لو ضغطت براها وهي مفتوحة جوه السيرش
+        document.addEventListener('click', () => {
+            dropdown.classList.remove('active');
+        });
+    });
+    </script>
+
+</body>
+</html>

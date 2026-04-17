@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAP Store | Login</title>
+    <link rel="stylesheet" href="NAP.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>WELCOME BACK</h2>
+            <p>Log in to your NAP account</p>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-btn">LOG IN</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="register.html">Create one</a></p>
+                <a href="NAP.html" class="back-home">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const form = document.getElementById('loginForm');
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // تجميع البيانات من الفورم
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        try {
+            // إرسال البيانات للمسار الصح /login في السيرفر المحلي
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // 1. مسح أي جلسة قديمة
+                localStorage.clear();
+
+                // 2. حفظ اسم المستخدم وإيميله عشان يظهروا في الهيدر وباقي الموقع
+                if (result.userName) {
+                    localStorage.setItem('userName', result.userName);
+                    localStorage.setItem('userEmail', data.email);
+                }
+
+                // 3. رسالة النجاح
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Logged in successfully. Welcome back!',
+                    icon: 'success',
+                    confirmButtonText: 'Go to Shop',
+                    confirmButtonColor: '#000'
+                }).then(() => {
+                    // التوجه للصفحة الرئيسية بعد الضغط على الزرار
+                    window.location.replace('NAP.html'); 
+                });
+
+            } else {
+                // لو السيرفر رد بإن البيانات غلط (باسورد أو إيميل)
+                Swal.fire({
+                    title: 'Login Failed',
+                    text: result.message || 'Invalid email or password',
+                    icon: 'error',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#000'
+                });
+            }
+        } catch (error) {
+            // لو السيرفر مطفي أصلاً (node server.js مش شغال)
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Server Error',
+                text: 'Make sure your backend server is running on port 3000!',
+                icon: 'warning',
+                confirmButtonColor: '#000'
+            });
+        }
+    });
+</script>
+</body>
+</html>
