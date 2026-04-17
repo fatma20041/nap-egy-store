@@ -4,21 +4,23 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const bcrypt = require('bcryptjs'); 
-const path = require('path'); // ✅ أضفت ده بس عشان التنسيقات تشتغل
+const path = require('path'); // مكتبة المسارات
 
 const app = express();
-
-// --- تعديل الربط بالـ CSS والملفات (الأهم) ---
-app.use(express.static(path.join(__dirname)));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'NAP.html')); 
-});
 
 // 1. الإعدادات الأساسية
 app.use(cors());
 app.use(express.json({ limit: '100mb' })); 
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
+
+// ✅ السطر ده هو اللي بيخلي التنسيقات (NAP.css) تظهر
+// بيخلي السيرفر يقرأ أي ملف موجود في نفس المجلد
+app.use(express.static(path.join(__dirname)));
+
+// ✅ توجيه الصفحة الرئيسية لفتح ملف NAP.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'NAP.html')); 
+});
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -196,7 +198,7 @@ ${customInfoText}
 });
 
 // ---------------------------------------------------
-// CONTACT
+// 8. CONTACT
 // ---------------------------------------------------
 app.post('/contact', (req, res) => {
     const { name, email, phone, comment } = req.body;
@@ -211,7 +213,7 @@ app.post('/contact', (req, res) => {
 });
 
 // ---------------------------------------------------
-// PRODUCTS
+// 9. PRODUCTS
 // ---------------------------------------------------
 app.get('/products', async (req, res) => {
     try {
