@@ -6,6 +6,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs'); // ✅ ADDED
 
 const app = express();
+app.use(express.static(__dirname));
 
 // 1. الإعدادات الأساسية
 app.use(cors());
@@ -17,14 +18,20 @@ const upload = multer({ storage: multer.memoryStorage() });
 // ---------------------------------------------------
 // 2. الربط بقاعدة البيانات (MongoDB)
 // ---------------------------------------------------
+
+
+// 1. السطر ده أهم سطر عشان ملفات الـ HTML والـ CSS تظهر للناس
+app.use(express.static(__dirname));
+
 const dbURI = 'mongodb+srv://admin:nap123@cluster0.l7barrw.mongodb.net/NAP_DB';
+
 mongoose.connect(dbURI)
   .then(() => {
       console.log('Connected to NAP Database! ✅');
-      seedProducts(); 
+      // لو عندك دالة اسمها seedProducts سيبها، لو مش عندك امسحي السطر اللي تحت ده
+      if (typeof seedProducts === "function") seedProducts(); 
   })
   .catch((err) => console.log('Database Connection Error ❌:', err));
-
 // ---------------------------------------------------
 // 3. إعداد Nodemailer
 // ---------------------------------------------------
@@ -296,4 +303,4 @@ async function seedProducts() {
 
 // ---------------------------------------------------
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server is flying on port ${PORT} 🚀`));
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
