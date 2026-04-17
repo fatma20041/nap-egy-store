@@ -4,7 +4,7 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const bcrypt = require('bcryptjs'); 
-const path = require('path'); 
+const path = require('path'); // ✅ مكتبة المسارات (ضرورية للرفع)
 
 const app = express();
 
@@ -13,13 +13,12 @@ app.use(cors());
 app.use(express.json({ limit: '100mb' })); 
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
-// ✅ السطر ده حيوي جداً: بيخلي السيرفر يفتح الصور وملفات الـ CSS والـ JS
+// ✅ السطر ده بيخلي السيرفر يشوف ملفات الـ CSS والصور اللي جنبه
+app.use(express.static(__dirname));
 
-app.use(express.static(path.join(__dirname)));
-
-// ✅ توجيه الصفحة الرئيسية لفتح ملف NAP.html
+// ✅ السطر ده بيخلي الموقع يفتح صفحة NAP.html تلقائياً أول ما تفتحيه
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'NAP.html')); 
+    res.sendFile(path.join(__dirname, 'NAP.html'));
 });
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -32,7 +31,7 @@ const dbURI = 'mongodb+srv://admin:nap123@cluster0.l7barrw.mongodb.net/NAP_DB';
 mongoose.connect(dbURI)
   .then(() => {
       console.log('Connected to NAP Database! ✅');
-      seedProducts(); // استدعاء دالة إضافة المنتجات التجريبية
+      if (typeof seedProducts === "function") seedProducts(); 
   })
   .catch((err) => console.log('Database Connection Error ❌:', err));
 
@@ -46,7 +45,7 @@ const transporter = nodemailer.createTransport({
     secure: true,
     auth: {
         user: 'nap.egy.store@gmail.com',
-        pass: 'ovov fbwh nhwx mqyv' // كود التطبيق الخاص بجوجل
+        pass: 'ovov fbwh nhwx mqyv'
     },
     tls: {
         rejectUnauthorized: false
@@ -75,8 +74,10 @@ const Product = mongoose.model('Product', new mongoose.Schema({
 }));
 
 // ---------------------------------------------------
-// 5. Auth (التسجيل ودخول المستخدمين)
+// 5. AUTH (REGISTER + LOGIN)
 // ---------------------------------------------------
+
+// التسجيل
 app.post('/register', async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
@@ -93,6 +94,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// تسجيل الدخول
 app.post('/login', async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -115,47 +117,45 @@ app.post('/login', async (req, res) => {
 });
 
 // ---------------------------------------------------
-// 6. Update Account (تعديل بيانات الحساب)
+// 6. UPDATE ACCOUNT (تحديث البيانات)
 // ---------------------------------------------------
 app.post('/update-account', async (req, res) => {
     try {
         const { email, fullName, newPassword } = req.body;
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
+        if (!user) return res.status(404).json({ message: "User not found" });
+
         if (fullName) user.fullName = fullName;
         if (newPassword && newPassword.trim() !== "") {
             user.password = await bcrypt.hash(newPassword, 10);
         }
         await user.save();
-        res.status(200).json({
-            message: "Account updated successfully",
-            userName: user.fullName
-        });
+        res.status(200).json({ message: "Account updated successfully", userName: user.fullName });
     } catch (err) {
         res.status(500).json({ message: "Server error" });
     }
 });
 
 // ---------------------------------------------------
-// 7. Orders (إرسال الطلبات للإيميل)
+// 7. ORDERS + EMAIL (إرسال الطلب بسرعة ✅)
 // ---------------------------------------------------
 app.post('/place-order', async (req, res) => {
     try {
         const data = req.body;
         const { customer, payment, cart_items, total, custom_designs } = data;
-        
+
+        // رد سريع للمتصفح
         res.status(200).json({ status: 'success' });
 
+        // معالجة الإيميل في الخلفية
         let attachments = [];
         let customInfoText = "";
 
         if (custom_designs && custom_designs.length > 0) {
-            customInfoText += `\n=========================================\n   🎨 CUSTOM DESIGN DETAILS\n=========================================\n`;
+            customInfoText += `\n=========================================\n🎨 CUSTOM DESIGN DETAILS\n=========================================\n`;
             custom_designs.forEach((design, i) => {
                 customInfoText += `\nDesign #${i + 1}\nFit: ${design.fit}\nColor: ${design.color}\nDescription: ${design.description}\n`;
-                if (design.images && design.images.length > 0) {
+                if (design.images && Array.isArray(design.images) && design.images.length > 0) {
                     design.images.forEach((img, index) => {
                         const base64 = img.includes(',') ? img.split(',')[1] : img;
                         attachments.push({
@@ -175,14 +175,14 @@ app.post('/place-order', async (req, res) => {
             attachments: attachments,
             text: `
 =========================================
-    📦 NEW ORDER DETAILS RECEIVED
+📦 NEW ORDER DETAILS
 =========================================
 Customer: ${customer.name}
 Email:    ${customer.email}
 Phone:    ${customer.phone}
 Address:  ${customer.address}
 Method:   ${payment}
-Total:    ${total} EGP
+Total:    ${total}
 
 🛒 ITEMS:
 ${cart_items.map(item => `- ${item.name} (Qty: ${item.qty}) - EGP ${item.price}`).join('\n')}
@@ -194,12 +194,12 @@ ${customInfoText}
 
         transporter.sendMail(mailOptions).catch(err => console.error("Mail Error:", err));
     } catch (err) {
-        console.error("Order Error:", err);
+        console.error("Order processing error:", err);
     }
 });
 
 // ---------------------------------------------------
-// 8. Contact Form
+// 8. CONTACT (نموذج التواصل)
 // ---------------------------------------------------
 app.post('/contact', (req, res) => {
     const { name, email, phone, comment } = req.body;
@@ -214,18 +214,17 @@ app.post('/contact', (req, res) => {
 });
 
 // ---------------------------------------------------
-// 9. Products API (جلب المنتجات)
+// 9. PRODUCTS (جلب المنتجات)
 // ---------------------------------------------------
 app.get('/products', async (req, res) => {
     try {
         const products = await Product.find();
         res.json(products);
     } catch (err) {
-        res.status(500).json({ message: "Error fetching products" });
+        res.status(500).json({ message: "Error" });
     }
 });
 
-// دالة لإضافة منتجات تجريبية لو القاعدة فاضية
 async function seedProducts() {
     const count = await Product.countDocuments();
     if (count === 0) {
@@ -242,6 +241,4 @@ async function seedProducts() {
 // تشغيل السيرفر
 // ---------------------------------------------------
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server is running on port ${PORT} 🚀`));
